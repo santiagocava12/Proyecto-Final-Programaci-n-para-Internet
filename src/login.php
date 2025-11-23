@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'conexion.php'; // Está en la misma carpeta src, así que solo el nombre
+require 'conexion.php';
 
 $mensaje = "";
 
@@ -39,7 +39,7 @@ if (isset($_POST['btn_login'])) {
             $_SESSION['nombre'] = $fila['nombre'];
             $_SESSION['rol'] = $fila['rol'];
             
-            // IMPORTANTE: Salir de src para ir al index principal
+           
             header("Location: ../index.php"); 
             exit();
         } else {
