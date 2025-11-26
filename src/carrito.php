@@ -58,6 +58,14 @@ $total = 0;
     <main class="container my-5">
         <h1 class="mb-4">Tu Carrito de Compras</h1>
 
+        <?php if (isset($_SESSION['mensaje_exito'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>✅ ¡Excelente!</strong> <?php echo $_SESSION['mensaje_exito']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['mensaje_exito']); ?>
+        <?php endif; ?>
+
         <?php if ($resultado->num_rows > 0): ?>
             <div class="row">
                 <div class="col-md-9">
@@ -127,8 +135,10 @@ $total = 0;
             </div>
         
         <?php else: ?>
-            <div class="alert alert-info text-center py-5">
-                <h3>Tu carrito está vacío 🛒</h3>
+            <div class="alert alert-info text-center py-5 shadow-sm">
+                <div style="font-size: 4rem;">🛒</div>
+                <h3 class="mt-3">Tu carrito está vacío</h3>
+                <p>¿No sabes qué jugar? ¡Revisa nuestras ofertas!</p>
                 <a href="catalogo.php" class="btn btn-primary mt-3">Ir al Catálogo</a>
             </div>
         <?php endif; ?>

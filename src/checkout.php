@@ -3,7 +3,7 @@ session_start();
 require 'conexion.php';
 
 if (!isset($_SESSION['id_usuario']) || !isset($_POST['total_compra'])) {
-    header("Location: index.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -35,7 +35,9 @@ try {
 
     $conn->commit();
     
-    echo "<script>alert('¡Compra realizada con éxito! Gracias por tu preferencia.'); window.location.href='../index.php';</script>";
+    $_SESSION['mensaje_exito'] = "¡Compra realizada con éxito! Gracias por tu preferencia.";
+    header("Location: carrito.php");
+    exit();
 
 } catch (Exception $e) {
     $conn->rollback();

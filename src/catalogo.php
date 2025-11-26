@@ -20,8 +20,8 @@ $resultado = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .card-img-top {
-            height: 200px;
-            object-fit: contain;
+            height: 250px; 
+            object-fit: contain; 
             padding: 10px;
             background-color: #fff;
         }
