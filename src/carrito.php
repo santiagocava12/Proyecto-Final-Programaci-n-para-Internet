@@ -1,11 +1,25 @@
 <?php
 session_start();
+require 'conexion.php';
+
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$id_usuario = $_SESSION['id_usuario'];
+$sql = "SELECT c.id_carrito, c.cantidad, p.nombre, p.precio, p.imagen_url 
+        FROM carrito c 
+        JOIN productos p ON c.id_producto = p.id_producto 
+        WHERE c.id_usuario = $id_usuario";
+$resultado = $conn->query($sql);
+$total = 0;
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Tu Carrito - GameStore</title>
+    <title>Carrito - GameStore</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
@@ -27,40 +41,97 @@ session_start();
                     </ul>
                     <div class="d-flex align-items-center">
                         <a href="carrito.php" class="btn btn-light me-3 active">🛒 Carrito</a>
-                        <?php if (isset($_SESSION['nombre'])): ?>
-                            <div class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    Hola, <?php echo $_SESSION['nombre']; ?>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="logout.php">Cerrar Sesión</a></li>
-                                </ul>
-                            </div>
-                        <?php else: ?>
-                            <a href="login.php" class="btn btn-primary">Ingresar</a>
-                        <?php endif; ?>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                Hola, <?php echo $_SESSION['nombre']; ?>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="logout.php">Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </nav>
     </header>
 
-    <main class="container my-5 text-center">
-        <h1 class="mb-4">Carrito de Compras</h1>
+    <main class="container my-5">
+        <h1 class="mb-4">Tu Carrito de Compras</h1>
 
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm py-5">
-                    <div class="card-body">
-                        <div class="mb-3" style="font-size: 4rem;">🛒</div>
-                        <h3 class="card-title text-muted">Tu carrito está vacío</h3>
-                        <p class="card-text mb-4">Parece que aún no has agregado ningún videojuego o consola.</p>
-                        <a href="catalogo.php" class="btn btn-primary btn-lg">Explorar Catálogo</a>
+        <?php if ($resultado->num_rows > 0): ?>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle bg-white shadow-sm rounded">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
+                                    <th style="width: 15%;">Cantidad</th>
+                                    <th>Subtotal</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while($item = $resultado->fetch_assoc()): 
+                                    $subtotal = $item['precio'] * $item['cantidad'];
+                                    $total += $subtotal;
+                                ?>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="<?php echo $item['imagen_url']; ?>" width="50" class="me-3 rounded">
+                                            <span><?php echo $item['nombre']; ?></span>
+                                        </div>
+                                    </td>
+                                    <td>$<?php echo number_format($item['precio'], 2); ?></td>
+                                    <td>
+                                        <form action="carrito_acciones.php" method="POST">
+                                            <input type="hidden" name="accion" value="actualizar">
+                                            <input type="hidden" name="id_carrito" value="<?php echo $item['id_carrito']; ?>">
+                                            <input type="number" name="cantidad" value="<?php echo $item['cantidad']; ?>" min="1" class="form-control" onchange="this.form.submit()">
+                                        </form>
+                                    </td>
+                                    <td class="fw-bold">$<?php echo number_format($subtotal, 2); ?></td>
+                                    <td>
+                                        <form action="carrito_acciones.php" method="POST">
+                                            <input type="hidden" name="accion" value="eliminar">
+                                            <input type="hidden" name="id_carrito" value="<?php echo $item['id_carrito']; ?>">
+                                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">Resumen</div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-3 fw-bold fs-5">
+                                <span>Total:</span>
+                                <span class="text-success">$<?php echo number_format($total, 2); ?></span>
+                            </div>
+                            <hr>
+                            <form action="checkout.php" method="POST">
+                                <input type="hidden" name="total_compra" value="<?php echo $total; ?>">
+                                <button type="submit" class="btn btn-success w-100 btn-lg">Finalizar Compra</button>
+                            </form>
+                            <a href="catalogo.php" class="btn btn-outline-secondary w-100 mt-2">Seguir comprando</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+        
+        <?php else: ?>
+            <div class="alert alert-info text-center py-5">
+                <h3>Tu carrito está vacío 🛒</h3>
+                <a href="catalogo.php" class="btn btn-primary mt-3">Ir al Catálogo</a>
+            </div>
+        <?php endif; ?>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
