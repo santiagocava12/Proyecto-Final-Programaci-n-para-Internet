@@ -66,6 +66,14 @@ session_start();
                                     Hola, <?php echo $_SESSION['nombre']; ?>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="src/perfil.php">Mi Historial</a></li>
+                                    
+                                    <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="src/admin.php">Panel Admin</a></li>
+                                    <?php endif; ?>
+                                    
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="src/logout.php">Cerrar Sesión</a></li>
                                 </ul>
                             </div>
