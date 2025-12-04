@@ -132,7 +132,7 @@ session_start();
                         <div class="placeholder-box bg-dark text-white">CONSOLAS</div>
                         <div class="card-body text-center">
                             <h5 class="card-title">Next-Gen</h5>
-                            <a href="src/catalogo.php" class="btn btn-outline-dark btn-sm mt-2">Ver Consolas</a>
+                            <a href="src/catalogo.php?cat=1" class="btn btn-outline-dark btn-sm mt-2">Ver Consolas</a>
                         </div>
                     </div>
                 </div>
@@ -141,7 +141,7 @@ session_start();
                         <div class="placeholder-box bg-primary text-white">VIDEOJUEGOS</div>
                         <div class="card-body text-center">
                             <h5 class="card-title">Lanzamientos</h5>
-                            <a href="src/catalogo.php" class="btn btn-outline-primary btn-sm mt-2">Ver Juegos</a>
+                            <a href="src/catalogo.php?cat=2" class="btn btn-outline-primary btn-sm mt-2">Ver Juegos</a>
                         </div>
                     </div>
                 </div>
@@ -150,7 +150,7 @@ session_start();
                         <div class="placeholder-box bg-danger text-white">ACCESORIOS</div>
                         <div class="card-body text-center">
                             <h5 class="card-title">Periféricos</h5>
-                            <a href="src/catalogo.php" class="btn btn-outline-danger btn-sm mt-2">Ver Accesorios</a>
+                            <a href="src/catalogo.php?cat=3" class="btn btn-outline-danger btn-sm mt-2">Ver Accesorios</a>
                         </div>
                     </div>
                 </div>
