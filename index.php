@@ -1,5 +1,4 @@
 <?php
-// Iniciar sesión para controlar el menú (Login/Logout)
 session_start();
 ?>
 <!DOCTYPE html>
