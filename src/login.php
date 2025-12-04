@@ -4,18 +4,22 @@ require 'conexion.php';
 
 $mensaje = "";
 
-// REGISTRO
+// LÓGICA DE REGISTRO
 if (isset($_POST['btn_registro'])) {
+    // Escapar caracteres para seguridad
     $nombre = $conn->real_escape_string($_POST['nombre']);
     $apellido = $conn->real_escape_string($_POST['apellido']);
     $email = $conn->real_escape_string($_POST['email']);
     $password = $_POST['password'];
+    // Encriptar contraseña
     $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
+    // Verificar si el correo ya existe
     $check = $conn->query("SELECT id_usuario FROM usuarios WHERE email = '$email'");
     if ($check->num_rows > 0) {
         $mensaje = "<div class='alert alert-danger'>Correo ya registrado.</div>";
     } else {
+        // Insertar nuevo usuario en la BD
         $sql = "INSERT INTO usuarios (nombre, apellido, email, password, rol) VALUES ('$nombre', '$apellido', '$email', '$password_hash', 'cliente')";
         if ($conn->query($sql)) {
             $mensaje = "<div class='alert alert-success'>Registro exitoso. Inicia sesión.</div>";
@@ -25,21 +29,24 @@ if (isset($_POST['btn_registro'])) {
     }
 }
 
-// LOGIN
+// LÓGICA DE LOGIN
 if (isset($_POST['btn_login'])) {
     $email = $conn->real_escape_string($_POST['email']);
     $password = $_POST['password'];
 
+    // Buscar usuario por email
     $resultado = $conn->query("SELECT id_usuario, nombre, password, rol FROM usuarios WHERE email = '$email'");
 
     if ($resultado->num_rows > 0) {
         $fila = $resultado->fetch_assoc();
+        // Verificar la contraseña encriptada
         if (password_verify($password, $fila['password'])) {
+            // Guardar datos en sesión
             $_SESSION['id_usuario'] = $fila['id_usuario'];
             $_SESSION['nombre'] = $fila['nombre'];
             $_SESSION['rol'] = $fila['rol'];
             
-           
+            // Redirigir al index principal
             header("Location: ../index.php"); 
             exit();
         } else {

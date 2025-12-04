@@ -2,12 +2,14 @@
 session_start();
 require 'conexion.php';
 
+// Verificar si hay filtro de categoría por GET
 $filtro = "";
 if (isset($_GET['cat'])) {
     $cat_id = $_GET['cat'];
     $filtro = "WHERE categoria_id = $cat_id";
 }
 
+// Consultar productos a la BD
 $sql = "SELECT * FROM productos $filtro";
 $resultado = $conn->query($sql);
 ?>
@@ -19,6 +21,7 @@ $resultado = $conn->query($sql);
     <title>Catálogo - GameStore</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Estilo para que las imágenes se vean uniformes */
         .card-img-top {
             height: 250px; 
             object-fit: contain; 

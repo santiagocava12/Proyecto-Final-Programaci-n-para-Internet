@@ -2,12 +2,14 @@
 session_start();
 require 'conexion.php';
 
+// Verificar login
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit();
 }
 
 $id_usuario = $_SESSION['id_usuario'];
+// Consultar productos en el carrito (Join con tabla Productos)
 $sql = "SELECT c.id_carrito, c.cantidad, p.nombre, p.precio, p.imagen_url 
         FROM carrito c 
         JOIN productos p ON c.id_producto = p.id_producto 
@@ -82,6 +84,7 @@ $total = 0;
                             </thead>
                             <tbody>
                                 <?php while($item = $resultado->fetch_assoc()): 
+                                    // Calcular subtotal
                                     $subtotal = $item['precio'] * $item['cantidad'];
                                     $total += $subtotal;
                                 ?>

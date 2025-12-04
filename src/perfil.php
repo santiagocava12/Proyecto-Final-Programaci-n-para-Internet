@@ -2,12 +2,14 @@
 session_start();
 require 'conexion.php';
 
+// Verificar login
 if (!isset($_SESSION['id_usuario'])) {
     header("Location: login.php");
     exit();
 }
 
 $id_usuario = $_SESSION['id_usuario'];
+// Consultar pedidos del usuario ordenados por fecha
 $sql_pedidos = "SELECT * FROM pedidos WHERE id_usuario = $id_usuario ORDER BY fecha_pedido DESC";
 $res_pedidos = $conn->query($sql_pedidos);
 ?>
@@ -60,6 +62,7 @@ $res_pedidos = $conn->query($sql_pedidos);
             <div class="accordion" id="accordionPedidos">
                 <?php while($pedido = $res_pedidos->fetch_assoc()): 
                     $id_pedido = $pedido['id_pedido'];
+                    // Consultar el detalle (productos) de cada pedido
                     $sql_detalle = "SELECT d.*, p.nombre, p.imagen_url 
                                     FROM detalle_pedido d 
                                     JOIN productos p ON d.id_producto = p.id_producto 

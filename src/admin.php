@@ -2,6 +2,7 @@
 session_start();
 require 'conexion.php';
 
+// Verificar seguridad: solo admins pueden entrar
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
     header("Location: ../index.php");
     exit();
@@ -9,7 +10,10 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
 
 $mensaje = "";
 
+// Procesar formulario de admin
 if (isset($_POST['accion'])) {
+    
+    // CASO AGREGAR PRODUCTO
     if ($_POST['accion'] == 'agregar') {
         $nombre = $conn->real_escape_string($_POST['nombre']);
         $descripcion = $conn->real_escape_string($_POST['descripcion']);
@@ -19,6 +23,7 @@ if (isset($_POST['accion'])) {
         
         $imagen_url = "";
         
+        // Manejo de subida de imagen local
         if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
             $directorio = "uploads/";
             if (!file_exists($directorio)) {
@@ -31,9 +36,11 @@ if (isset($_POST['accion'])) {
                 $imagen_url = "uploads/" . $nombre_archivo;
             }
         } else {
+            // Si no sube imagen, usa la URL de texto
             $imagen_url = $conn->real_escape_string($_POST['imagen_url_texto']); 
         }
 
+        // Insertar en BD
         $sql = "INSERT INTO productos (nombre, descripcion, precio, stock, imagen_url, categoria_id) 
                 VALUES ('$nombre', '$descripcion', $precio, $stock, '$imagen_url', $categoria)";
         
@@ -44,6 +51,7 @@ if (isset($_POST['accion'])) {
         }
     }
 
+    // CASO ELIMINAR PRODUCTO
     if ($_POST['accion'] == 'eliminar') {
         $id = $_POST['id_producto'];
         $conn->query("DELETE FROM productos WHERE id_producto = $id");
@@ -51,6 +59,7 @@ if (isset($_POST['accion'])) {
     }
 }
 
+// Consultar inventario para mostrar en tabla
 $productos = $conn->query("SELECT * FROM productos ORDER BY id_producto DESC");
 ?>
 <!DOCTYPE html>

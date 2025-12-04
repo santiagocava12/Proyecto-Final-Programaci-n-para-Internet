@@ -1,4 +1,5 @@
 <?php
+// Iniciar sesión para controlar el menú (Login/Logout)
 session_start();
 ?>
 <!DOCTYPE html>
@@ -9,6 +10,7 @@ session_start();
     <title>Inicio - GameStore</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        /* Estilos CSS personalizados para el banner y tarjetas */
         .hero-section {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: white;
@@ -51,6 +53,7 @@ session_start();
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item"><a class="nav-link active" href="index.php">Inicio</a></li>
                         <li class="nav-item"><a class="nav-link" href="src/catalogo.php">Catálogo</a></li>
+                        
                         <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
                             <li class="nav-item"><a class="nav-link" href="src/admin.php">Administración</a></li>
                         <?php endif; ?>
@@ -60,6 +63,7 @@ session_start();
                         <a href="src/carrito.php" class="btn btn-outline-light me-3 position-relative">
                             🛒 Carrito
                         </a>
+                        
                         <?php if (isset($_SESSION['nombre'])): ?>
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
